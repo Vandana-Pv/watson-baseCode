@@ -9,5 +9,5 @@ app.use('/watsonFulfilment',watsonFulfilment)
 
 const port = process.env.PORT || 4000;
 app.listen(port, function () {
-    console.log("Express app started on port 4000");
+    console.log(`Express app started on port ${port}`);
 });

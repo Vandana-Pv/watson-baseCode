@@ -41,20 +41,40 @@ async function sendMessage(watsonData,sessionId) {
         skills: {
           'main skill': {
             user_defined: {
-              sampleContext: 'MyName'
+              message: watsonData.message
             }
           }
         }
       }
-    }).then(res => {
-      // console.log(JSON.stringify(res.result, null, 2))
-      let msgData = res.result;
-      console.log('CONTEXT DATA',msgData.context.skills["main skill"].system.state)
-      resolve(msgData);
-    }).catch(err => {
-      console.log(err)
-      reject(err);
-    })
+    },
+    async function(err,res){
+      if(err){
+        console.log('Status Code---',err.status);
+        if(err.status == 404){
+          let msgData = {};
+          let newSessionId = await createSessionId(watsonData);
+          console.log('NEW---',newSessionId)
+          msgData.sessionId = newSessionId;
+          console.log('++++MSGDATA',msgData); 
+          resolve(msgData)
+        }
+      }
+      else{
+        let msgData = res.result;
+        console.log('Inside else')
+        resolve(msgData);
+      }
+    }
+    )
+    // .then(res => {
+    //   // console.log(JSON.stringify(res.result, null, 2))
+    //   let msgData = res.result;
+    //   console.log('CONTEXT DATA',msgData.context.skills["main skill"].system.state)
+    //   resolve(msgData);
+    // }).catch(err => {
+    //   // console.log('error:',err)
+    //   console.log('Status Code', err.status)
+    // })
   })
 }
 
